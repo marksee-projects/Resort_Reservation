@@ -769,7 +769,7 @@ em { font-style: italic; color: var(--ocean); }
   transform: translateY(80px);
   opacity: 0;
   transition: transform .35s ease, opacity .35s ease;
-  z-index: 3000;
+  z-index: 10000;
   pointer-events: none;
   max-width: 340px;
 }
@@ -824,3 +824,146 @@ em { font-style: italic; color: var(--ocean); }
   .amenities-grid { grid-template-columns: 1fr; }
   .hero-title     { font-size: 2rem; }
 }
+
+/* ===== LOGIN MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.modal-overlay.active {
+  display: flex;
+}
+.modal-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  margin: 1rem;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+}
+.modal-close:hover { color: #333; }
+.modal-title {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+}
+.modal-subtitle {
+  text-align: center;
+  color: #777;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.modal-form .form-group {
+  margin-bottom: 1rem;
+}
+.modal-form .form-group:last-child {
+  margin-bottom: 0;
+}
+.modal-password-wrap {
+  position: relative !important;
+}
+.modal-card .form-group input {
+  padding: 0.9rem 1.1rem !important;
+}
+
+.modal-password-wrap input {
+  padding: 0.9rem 2.8rem 0.9rem 1.1rem;
+}
+.toggle-pw {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+}
+.modal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem 0 1.25rem;
+  font-size: 0.875rem;
+}
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  color: #555;
+}
+.forgot-link {
+  color: #5b5ef4;
+  text-decoration: none;
+  font-weight: 500;
+}
+.forgot-link:hover { 
+  text-decoration: underline;
+}
+.modal-footer-text {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  color: #666;
+}
+.create-link {
+  color: #5b5ef4;
+  font-weight: 600;
+  text-decoration: none;
+}
+.create-link:hover { text-decoration: underline; }
+
+.modal-card .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.modal-card {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+#registerModal .modal-card {
+  max-width: 420px;
+  width: calc(100% - 2rem);
+  box-sizing: border-box;
+}
+
+#registerModal .modal-card .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+#registerModal .modal-card .form-row .form-group input {
+  width: 100%;
+  box-sizing: border-box;
+}
+

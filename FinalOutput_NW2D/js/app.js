@@ -133,9 +133,121 @@ function isValidEmail(email) {
 
 
 /* =================================================================
-   LOGIN MODAL
+   LOGIN MODAL //no submission + validation yet, just UI controls
+   ================================================================= */
+  // Modal controls
+function openLoginModal() {
+  document.getElementById('loginModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLoginModal() {
+  document.getElementById('loginModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+// Close when clicking the dark overlay
+document.getElementById('loginModal').addEventListener('click', function(e) {
+  if (e.target === this) closeLoginModal();
+});
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLoginModal();
+});
+// Toggle password visibility
+function togglePassword() {
+  const pw = document.getElementById('loginPassword');
+  const icon = document.getElementById('eyeIcon');
+  if (pw.type === 'password') {
+    pw.type = 'text';
+    icon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    pw.type = 'password';
+    icon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+
+/* =================================================================
+   REGISTER MODAL //no submission + validation yet, just UI controls
    ================================================================= */
 
+   // Register modal controls
+function openRegisterModal() {
+  document.getElementById('registerModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeRegisterModal() {
+  document.getElementById('registerModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Switch between modals
+function switchToRegister() {
+  closeLoginModal();
+  setTimeout(() => openRegisterModal(), 150);
+}
+function switchToLogin() {
+  closeRegisterModal();
+  setTimeout(() => openLoginModal(), 150);
+}
+
+// Close register modal on backdrop click
+document.getElementById('registerModal').addEventListener('click', function(e) {
+  if (e.target === this) closeRegisterModal();
+});
+
+// Toggle password visibility for register
+function toggleRegPassword() {
+  const pw = document.getElementById('regPassword');
+  const icon = document.getElementById('regEyeIcon');
+  if (pw.type === 'password') {
+    pw.type = 'text';
+    icon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    pw.type = 'password';
+    icon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+function toggleRegConfirmPassword() {
+  const pw = document.getElementById('regConfirmPassword');
+  const icon = document.getElementById('regConfirmEyeIcon');
+  if (pw.type === 'password') {
+    pw.type = 'text';
+    icon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    pw.type = 'password';
+    icon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+
+// Register form submission
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const first = document.getElementById('regFirstName').value.trim();
+  const last = document.getElementById('regLastName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const confirm = document.getElementById('regConfirmPassword').value;
+  const agreed = document.getElementById('agreeTerms').checked;
+
+  if (!first || !last || !email || !password) {
+    showToast('Please fill in all required fields.', 'error');
+    return;
+  }
+  if (password !== confirm) {
+    showToast('Passwords do not match.', 'error');
+    return;
+  }
+  if (!agreed) {
+    showToast('Please agree to the Terms & Conditions.', 'error');
+    return;
+  }
+
+  // ✅ Replace this block with your backend API call
+  showToast('Account created successfully! Please sign in.', 'success');
+  closeRegisterModal();
+  setTimeout(() => openLoginModal(), 300);
+  this.reset();
+});
 
 /* =================================================================
    SCROLL REVEAL — simple intersection observer for cards

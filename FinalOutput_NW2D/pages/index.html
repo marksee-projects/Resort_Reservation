@@ -381,8 +381,80 @@
   </footer>
 
   <!-- ===== LOGIN MODAL ===== -->
-  
+<div class="modal-overlay" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeLoginModal()" aria-label="Close">&times;</button>
+    <h2 class="modal-title" id="modalTitle">Sign In</h2>
+    <p class="modal-subtitle">Enter your credentials to access your account</p>
 
+    <form class="modal-form" id="loginForm" novalidate>
+      <div class="form-group">
+        <input type="email" id="loginEmail" name="email" placeholder="Email Address" required />
+      </div>
+      <div class="form-group modal-password-wrap">
+        <input type="password" id="loginPassword" name="password" placeholder="Password" required />
+        <button type="button" class="toggle-pw" onclick="togglePassword()" aria-label="Show password">
+          <i class="fa-regular fa-eye" id="eyeIcon"></i>
+        </button>
+      </div>
+      <div class="modal-row">
+        <label class="remember-me">
+          <input type="checkbox" name="remember" /> Remember me
+        </label>
+        <a class="forgot-link">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn-primary btn-full">Sign In</button>
+    </form>
+    <p class="modal-footer-text">Don't have an account? <a class="create-link" onclick="switchToRegister()">Create one</a></p>
+  </div>
+</div>
+
+<!-- ===== REGISTER MODAL ===== -->
+<div class="modal-overlay" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeRegisterModal()" aria-label="Close">&times;</button>
+    <h2 class="modal-title" id="registerModalTitle">Create Account</h2>
+    <p class="modal-subtitle">Fill in the details below to get started</p>
+
+    <form class="modal-form" id="registerForm" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <input type="text" id="regFirstName" name="first_name" placeholder="First Name" required />
+        </div>
+        <div class="form-group">
+          <input type="text" id="regLastName" name="last_name" placeholder="Last Name" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="email" id="regEmail" name="email" placeholder="Email Address" required />
+      </div>
+      <div class="form-group">
+        <input type="tel" id="regPhone" name="phone" placeholder="Phone Number" />
+      </div>
+      <div class="form-group modal-password-wrap">
+        <input type="password" id="regPassword" name="password" placeholder="Password" required />
+        <button type="button" class="toggle-pw" onclick="toggleRegPassword()" aria-label="Show password">
+          <i class="fa-regular fa-eye" id="regEyeIcon"></i>
+        </button>
+      </div>
+      <div class="form-group modal-password-wrap">
+        <input type="password" id="regConfirmPassword" name="confirm_password" placeholder="Confirm Password" required />
+        <button type="button" class="toggle-pw" onclick="toggleRegConfirmPassword()" aria-label="Show confirm password">
+          <i class="fa-regular fa-eye" id="regConfirmEyeIcon"></i>
+        </button>
+      </div>
+      <div class="modal-row">
+        <label class="remember-me">
+          <input type="checkbox" name="agree" id="agreeTerms" required />
+          I agree to the <a href="#" class="forgot-link" style="margin-left:4px;">Terms &amp; Conditions</a>
+        </label>
+      </div>
+      <button type="submit" class="btn-primary btn-full">Create Account</button>
+    </form>
+
+    <p class="modal-footer-text">Already have an account? <a href="#" class="create-link" onclick="switchToLogin()">Sign in</a></p>
+  </div>
+</div>
   <!-- Toast notification -->
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
