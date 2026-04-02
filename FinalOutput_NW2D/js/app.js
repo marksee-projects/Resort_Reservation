@@ -123,7 +123,120 @@ function isValidEmail(email) {
 /* =================================================================
    BOOKING FORM — validation + submission
    ================================================================= */
+const bookingForm = document.getElementById("bookingForm");
 
+const checkIn   = document.getElementById("checkIn");
+const checkOut  = document.getElementById("checkOut");
+const guests    = document.getElementById("guests");
+const roomType  = document.getElementById("roomType");
+
+const checkInError  = document.getElementById("checkInError");
+const checkOutError = document.getElementById("checkOutError");
+const guestsError   = document.getElementById("guestsError");
+const roomTypeError = document.getElementById("roomTypeError");
+
+bookingForm.addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  let valid = true;
+
+  // clear previous errors
+  checkInError.textContent  = "";
+  checkOutError.textContent = "";
+  guestsError.textContent   = "";
+  roomTypeError.textContent = "";
+
+  // check-in
+  if(checkIn.value === "") {
+    checkInError.textContent = "Please select check-in date.";
+    valid = false;
+  }
+
+  // check-out
+  if(checkOut.value === "") {
+    checkOutError.textContent = "Please select check-out date.";
+    valid = false;
+  }
+
+  // check-out must be after check-in
+  if(checkIn.value && checkOut.value) {
+    const inDate  = new Date(checkIn.value);
+    const outDate = new Date(checkOut.value);
+    if(outDate <= inDate) {
+      checkOutError.textContent = "Check-out must be after check-in.";
+      valid = false;
+    }
+  }
+
+  // guests
+  if(guests.value === "") {
+    guestsError.textContent = "Please select number of guests.";
+    valid = false;
+  }
+
+  // room type
+  if(roomType.value === "") {
+    roomTypeError.textContent = "Please select room type.";
+    valid = false;
+  }
+
+  if(!valid) return;
+
+  // ── Send to PHP ──────────────────────────────
+  const formData = new FormData();
+  formData.append("check_in",  checkIn.value);
+  formData.append("check_out", checkOut.value);
+  formData.append("guests",    guests.value);
+  formData.append("room_type", roomType.value);
+
+  try {
+    const response = await fetch("save_booking.php", {
+      method: "POST",
+      body:   formData,
+    });
+
+    const result = await response.json();
+
+    if(result.success) {
+      showToast("✅ Reservation submitted! (ID #" + result.id + ")");
+      bookingForm.reset();
+
+      // show billing button
+      document.getElementById("proceedToBilling").style.display = "block";
+
+    } else if(result.conflict) {
+      roomTypeError.textContent = "Already booked with someone else. Please choose a different date and room.";
+      showToast("❌ This room is already booked for those dates.");
+      document.getElementById("proceedToBilling").style.display = "none";
+
+    } else {
+      showToast("❌ Error: " + result.message);
+      document.getElementById("proceedToBilling").style.display = "none";
+    }
+
+  } catch(err) {
+    console.error("Fetch error:", err);
+    showToast("❌ Could not connect to the server. Make sure XAMPP is running.");
+    document.getElementById("proceedToBilling").style.display = "none";
+  }
+
+});
+
+
+// toast notif
+
+function showToast(message){
+
+  const toast = document.getElementById("toast");
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },3000);
+
+}
 
 /* =================================================================
    CONTACT FORM — validation + submission
@@ -218,120 +331,36 @@ function toggleRegConfirmPassword() {
   }
 }
 
-
-// ===== LOGIN SUBMIT =====
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
+// Register form submission
+document.getElementById('registerForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  const btn = this.querySelector('button[type="submit"]');
-  btn.textContent = 'Signing in...';
-  btn.disabled = true;
+  const first = document.getElementById('regFirstName').value.trim();
+  const last = document.getElementById('regLastName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const confirm = document.getElementById('regConfirmPassword').value;
+  const agreed = document.getElementById('agreeTerms').checked;
 
-  const payload = {
-    email:    document.getElementById('loginEmail').value.trim(),
-    password: document.getElementById('loginPassword').value,
-  };
-
-  try {
-    const res  = await fetch('login.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      localStorage.setItem('firstName', data.user.name.split(' ')[0]);
-      localStorage.setItem('role', data.user.role); 
-      showToast(data.message, 'success');
-      closeLoginModal();
-      setTimeout(() => {
-        window.location.href = 'index.html'; 
-      }, 1000);
-    } else {
-      showToast(data.message, 'error');
-    }
-  } catch (err) {
-    showToast('Network error. Please try again.', 'error');
-  } finally {
-    btn.textContent = 'Sign In';
-    btn.disabled = false;
+  if (!first || !last || !email || !password) {
+    showToast('Please fill in all required fields.', 'error');
+    return;
   }
-});
-
-// ===== REGISTER SUBMIT =====
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  const agree = document.getElementById('agreeTerms');
-  if (!agree.checked) {
-    showToast('You must agree to the Terms & Conditions.');
+  if (password !== confirm) {
+    showToast('Passwords do not match.', 'error');
+    return;
+  }
+  if (!agreed) {
+    showToast('Please agree to the Terms & Conditions.', 'error');
     return;
   }
 
-  const btn = this.querySelector('button[type="submit"]');
-  btn.textContent = 'Creating account...';
-  btn.disabled = true;
-
-  const payload = {
-    first_name:       document.getElementById('regFirstName').value.trim(),
-    last_name:        document.getElementById('regLastName').value.trim(),
-    email:            document.getElementById('regEmail').value.trim(),
-    phone:            document.getElementById('regPhone').value.trim(),
-    password:         document.getElementById('regPassword').value,
-    confirm_password: document.getElementById('regConfirmPassword').value,
-  };
-
-  try {
-    const res  = await fetch('register.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      showToast(data.message);
-      closeRegisterModal();
-      this.reset();
-      setTimeout(() => openLoginModal(), 1000);
-      
-    } else {
-      showToast(data.message);
-    }
-  } catch (err) {
-    showToast('Network error. Please try again.');
-  } finally {
-    btn.textContent = 'Create Account';
-    btn.disabled = false;
-  }
+  // ✅ Replace this block with your backend API call
+  showToast('Account created successfully! Please sign in.', 'success');
+  closeRegisterModal();
+  setTimeout(() => openLoginModal(), 300);
+  this.reset();
 });
-
-/* =================================================================
-   SESSION CHECK — replace Login button with first name
-   ================================================================= */
-function checkSession() {
-  const firstName = localStorage.getItem('firstName');
-
-  if (firstName) {
-    ['loginBtn', 'loginBtnMobile'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.textContent = firstName;
-        btn.setAttribute('onclick', ''); 
-        btn.addEventListener('click', function(e) {
-          e.preventDefault();
-          localStorage.clear();
-          window.location.href = 'logout.php';
-        });
-      }
-    });
-  }
-}
-
-document.addEventListener('DOMContentLoaded', checkSession);
-openLoginModal();
-checkSession();
 
 /* =================================================================
    SCROLL REVEAL — simple intersection observer for cards

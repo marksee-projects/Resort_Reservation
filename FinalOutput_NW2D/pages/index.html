@@ -30,7 +30,7 @@
         <a href="#contact">Contact</a>
       </nav>
       <div class="nav-cta">
-        <button class="btn-login" id ="loginBtn" onclick="openLoginModal()">Login</button>
+        <button class="btn-login" onclick="openLoginModal()">Login</button>
         <a href="#reservation" class="btn-book">Book Now</a>
       </div>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
@@ -46,7 +46,7 @@
         <a href="#events" class="mobile-link">Events</a>
         <a href="#contact" class="mobile-link">Contact</a>
         <div class="mobile-cta">
-          <button class="btn-login" id="loginBtnMobile" onclick="openLoginModal()">Login</button>
+          <button class="btn-login" onclick="openLoginModal()">Login</button>
           <a href="#reservation" class="btn-book">Book Now</a>
         </div>
       </nav>
@@ -102,14 +102,17 @@
           <label for="roomType">Room Type</label>
           <select id="roomType" name="room_type" required>
             <option value="">Select Room</option>
-            <option value="deluxe">Deluxe Room</option>
-            <option value="suite">Ocean Suite</option>
-            <option value="villa">Beach Villa</option>
-            <option value="presidential">Presidential Suite</option>
+            <option value="villa1">Villa 1</option>
+            <option value="villaA">Villa A</option>
+            <option value="villaD">Villa D</option>
+            <option value="alejandro">Alejandro</option>
           </select>
           <span class="form-error" id="roomTypeError"></span>
         </div>
         <button type="submit" class="btn-primary btn-full">Check Availability</button>
+        <button type="button" class="btn-primary btn-full" id="proceedToBilling" style="display:none;">
+          Proceed to Billing
+        </button>
       </form>
     </div>
   </section>
