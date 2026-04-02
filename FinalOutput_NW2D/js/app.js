@@ -330,6 +330,8 @@ function checkSession() {
 }
 
 document.addEventListener('DOMContentLoaded', checkSession);
+openLoginModal();
+checkSession();
 
 /* =================================================================
    SCROLL REVEAL — simple intersection observer for cards
