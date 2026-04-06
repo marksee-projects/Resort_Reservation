@@ -102,18 +102,24 @@
           <label for="roomType">Room Type</label>
           <select id="roomType" name="room_type" required>
             <option value="">Select Room</option>
-            <option value="villa1">Villa 1</option>
-            <option value="villaA">Villa A</option>
-            <option value="villaD">Villa D</option>
-            <option value="alejandro">Alejandro</option>
+            <option value="Villa 1">Villa 1</option>
+            <option value="Villa A">Villa A</option>
+            <option value="Villa D">Villa D</option>
+            <option value="Alejandro">Alejandro</option>
           </select>
           <span class="form-error" id="roomTypeError"></span>
         </div>
         <button type="submit" class="btn-primary btn-full">Check Availability</button>
-        <button type="button" class="btn-primary btn-full" id="proceedToBilling" style="display:none;">
-          Proceed to Billing
-        </button>
       </form>
+      
+        <div id="availNotice" style="display:none; margin-top:14px; padding:12px 16px;
+        border-radius:10px; font-size:.875rem; font-family:sans-serif;"></div>
+
+      <!-- Proceed to Billing — shown by app.js when room is available -->
+      <button type="button" id="proceedToBilling" class="btn-primary btn-full"
+        style="display:none; margin-top:12px;">
+        Proceed to Billing
+      </button>
     </div>
   </section>
 

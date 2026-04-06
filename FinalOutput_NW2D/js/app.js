@@ -120,9 +120,6 @@ function isValidEmail(email) {
 }
 
 
-/* =================================================================
-   BOOKING FORM — validation + submission
-   ================================================================= */
 const bookingForm = document.getElementById("bookingForm");
 
 const checkIn   = document.getElementById("checkIn");
@@ -182,7 +179,6 @@ bookingForm.addEventListener("submit", async function(e) {
 
   if(!valid) return;
 
-  // ── Send to PHP ──────────────────────────────
   const formData = new FormData();
   formData.append("check_in",  checkIn.value);
   formData.append("check_out", checkOut.value);
@@ -198,11 +194,49 @@ bookingForm.addEventListener("submit", async function(e) {
     const result = await response.json();
 
     if(result.success) {
-      showToast("✅ Reservation submitted! (ID #" + result.id + ")");
-      bookingForm.reset();
+      
+      const checkInVal  = checkIn.value;
+      const checkOutVal = checkOut.value;
+      const guestsVal   = guests.value;
+      const selectedRoom = roomType.options[roomType.selectedIndex].text;
 
-      // show billing button
-      document.getElementById("proceedToBilling").style.display = "block";
+  const ROOM_RATES = {
+    'Villa 1':   { nightRate: 3000 },
+    'Villa A':   { nightRate: 3000 },
+    'Villa D':   { nightRate: 4500 },
+    'Alejandro': { nightRate: 4000 }
+  };
+
+  const nightRate = ROOM_RATES[selectedRoom]?.nightRate || 0;
+  const n = Math.max(1, Math.round(
+    (new Date(checkOutVal) - new Date(checkInVal)) / 86400000
+  ));
+
+  const reservation = {
+    id:        'R' + String(result.id).padStart(3, '0'),
+    dbId:      result.id,
+    checkIn:   checkInVal,
+    checkOut:  checkOutVal,
+    guests:    guestsVal,
+    roomKey:   selectedRoom,
+    roomLabel: selectedRoom,
+    nightRate: nightRate,
+    nights:    n,
+    status:    'Pending'
+  };
+
+  console.log("Saving reservation:", reservation); 
+  sessionStorage.setItem('pendingReservation', JSON.stringify(reservation));
+
+  bookingForm.reset();
+
+  showToast("✅ Reservation submitted! (ID #" + result.id + ")");
+
+  const billingBtn = document.getElementById("proceedToBilling");
+  if(billingBtn) {
+    billingBtn.style.display = "block";
+    billingBtn.onclick = () => window.location.href = 'billing.html';
+  }
 
     } else if(result.conflict) {
       roomTypeError.textContent = "Already booked with someone else. Please choose a different date and room.";
