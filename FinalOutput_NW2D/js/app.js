@@ -133,7 +133,7 @@ function isValidEmail(email) {
 
 
 /* =================================================================
-   LOGIN MODAL //no submission + validation yet, just UI controls
+   LOGIN MODAL 
    ================================================================= */
   // Modal controls
 function openLoginModal() {
@@ -166,7 +166,7 @@ function togglePassword() {
 }
 
 /* =================================================================
-   REGISTER MODAL //no submission + validation yet, just UI controls
+   REGISTER MODAL 
    ================================================================= */
 
    // Register modal controls
@@ -246,10 +246,12 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
       showToast(data.message, 'success');
       closeLoginModal();
       setTimeout(() => {
-        window.location.href = 'index.html'; 
-      }, 1000);
+        if (data.user.role === 'receptionist') {
+      window.location.href = 'receptionist.html';
     } else {
-      showToast(data.message, 'error');
+      window.location.href = 'index.html';
+    }
+  }, 1000);
     }
   } catch (err) {
     showToast('Network error. Please try again.', 'error');
@@ -280,6 +282,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     phone:            document.getElementById('regPhone').value.trim(),
     password:         document.getElementById('regPassword').value,
     confirm_password: document.getElementById('regConfirmPassword').value,
+    role:             'user',
   };
 
   try {
@@ -318,21 +321,26 @@ function checkSession() {
       const btn = document.getElementById(id);
       if (btn) {
         btn.textContent = firstName;
-        btn.setAttribute('onclick', ''); 
+        btn.setAttribute('onclick', '');
         btn.addEventListener('click', function(e) {
           e.preventDefault();
-          localStorage.clear();
-          window.location.href = 'logout.php';
+          if (confirm('Are you sure you want to log out?')) {
+            localStorage.clear();
+            window.location.href = 'logout.php';
+          }
         });
       }
     });
   }
 }
 
-document.addEventListener('DOMContentLoaded', checkSession);
-openLoginModal();
-checkSession();
+document.addEventListener('DOMContentLoaded', () => {
+  checkSession();
 
+  if (!localStorage.getItem('firstName')) {
+    openLoginModal();
+  }
+});
 /* =================================================================
    SCROLL REVEAL — simple intersection observer for cards
    ================================================================= */

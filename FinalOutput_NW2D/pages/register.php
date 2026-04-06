@@ -29,6 +29,7 @@ $email           = trim($data['email'] ?? '');
 $phone           = trim($data['phone'] ?? '');
 $password        = $data['password'] ?? '';
 $confirmPassword = $data['confirm_password'] ?? '';
+$role = 'user'; 
 
 if (!$firstName || !$lastName || !$email || !$password || !$confirmPassword) {
     echo json_encode(['success' => false, 'message' => 'All required fields must be filled.']);
