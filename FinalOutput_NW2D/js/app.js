@@ -228,6 +228,8 @@ bookingForm.addEventListener("submit", async function(e) {
       sessionStorage.setItem('pendingReservation', JSON.stringify(reservation));
 
       showToast("✅ Reservation submitted! (ID #" + result.id + ")", "success");
+
+
       bookingForm.reset();
 
       // show billing button
@@ -250,7 +252,6 @@ bookingForm.addEventListener("submit", async function(e) {
   }
 
 });
-
 
 /* =================================================================
    CONTACT FORM — validation + submission
