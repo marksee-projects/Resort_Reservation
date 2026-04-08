@@ -16,6 +16,13 @@ const loginModal  = document.getElementById('loginModal');
 const toast       = document.getElementById('toast');
 const yearSpan    = document.getElementById('year');
 
+const ROOM_RATES = {
+    'Villa 1':   { nightRate: 3000 },
+    'Villa A':   { nightRate: 3000 },
+    'Villa D':   { nightRate: 4500 },
+    'Alejandro': { nightRate: 4000 }
+};
+
 // Set current year in footer
 if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
@@ -198,7 +205,29 @@ bookingForm.addEventListener("submit", async function(e) {
     const result = await response.json();
 
     if(result.success) {
-      showToast("✅ Reservation submitted! (ID #" + result.id + ")");
+
+      const selectedRoom = roomType.options[roomType.selectedIndex].text;
+      const nightRate = ROOM_RATES[selectedRoom]?.nightRate || 0;
+      const n = Math.max(1, Math.round(
+        (new Date(checkOut.value) - new Date(checkIn.value)) / 86400000
+      ));
+
+      const reservation = {
+        id:        'R' + String(result.id).padStart(3, '0'),
+        dbId:      result.id,
+        checkIn:   checkIn.value,
+        checkOut:  checkOut.value,
+        guests:    guests.value,
+        roomLabel: selectedRoom,
+        nightRate: nightRate,
+        nights:    n,
+        status:    'Pending'
+      };
+
+      console.log("Saving reservation:", reservation);
+      sessionStorage.setItem('pendingReservation', JSON.stringify(reservation));
+
+      showToast("✅ Reservation submitted! (ID #" + result.id + ")", "success");
       bookingForm.reset();
 
       // show billing button
@@ -223,29 +252,11 @@ bookingForm.addEventListener("submit", async function(e) {
 });
 
 
-// toast notif
-
-function showToast(message){
-
-  const toast = document.getElementById("toast");
-
-  toast.textContent = message;
-  toast.classList.add("show");
-
-  setTimeout(()=>{
-    toast.classList.remove("show");
-  },3000);
-
-}
-
-
 /* =================================================================
    CONTACT FORM — validation + submission
    ================================================================= */
 
   
-
-
 /* =================================================================
    LOGIN MODAL 
    ================================================================= */
